@@ -1,0 +1,17 @@
+<div class="session-times-container">
+	<h2>Tiempos de Uso</h2>
+	<button (click)="createSessionTime()">Create Session Time</button>
+	<ul>
+		<li *ngFor="let sessionTime of sessionTimes" class="session-time-item">
+			<div class="session-time-details">
+				<p><strong>Fecha inicio:</strong> {{ sessionTime.fechaInicio | date:'short' }}</p>
+				<p><strong>Fecha fin:</strong> {{ sessionTime.fechaFin | date:'short' }}</p>
+				<p><strong>Duracion:</strong> {{ sessionTime.tiempoTotal }} seconds</p>
+			</div>
+			<div class="session-time-actions">
+				<button (click)="updateSessionTime(sessionTime)">Actualizar</button>
+				<button (click)="deleteSessionTime(sessionTime._id)">Eliminar</button>
+			</div>
+		</li>
+	</ul>
+</div>

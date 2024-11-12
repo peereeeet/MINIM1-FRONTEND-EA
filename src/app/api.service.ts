@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Usuario } from './models/usuario.model';
 import { Asignatura } from './models/asignatura.model';
+import { TiempoUso } from './models/tiempo-uso.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  // Método para obtener usuarios paginados
+  // Métodos para obtener usuarios
   getUsuariosPaginados(page: number, limit: number): Observable<any> {
     const params = new HttpParams()
       .set('page', page.toString())
@@ -20,23 +21,6 @@ export class ApiService {
     return this.http.get<any>(`${this.apiUrl}usuarios/listar-paginados`, { params });
   }
 
-  // Método para obtener asignaturas paginadas
-  getAsignaturasPaginadas(page: number, limit: number): Observable<any> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('limit', limit.toString());
-    return this.http.get<any>(`${this.apiUrl}asignaturas/paginacion`, { params });
-  }
-
-  // Método para obtener asignaturas de un usuario con paginación
-  getUsuarioAsignaturasPaginadas(usuarioId: string, page: number, limit: number): Observable<any> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('limit', limit.toString());
-    return this.http.get<any>(`${this.apiUrl}usuarios/${usuarioId}/asignaturas/paginacion`, { params });
-  }
-
-  // Métodos para el CRUD de usuarios
   getUsuarios(): Observable<Usuario[]> {
     return this.http.get<Usuario[]>(`${this.apiUrl}usuarios`);
   }
@@ -57,33 +41,64 @@ export class ApiService {
     return this.http.delete<void>(`${this.apiUrl}usuarios/${id}`);
   }
 
-  // Obtener todas las asignaturas
+  // Métodos para obtener asignaturas
+  getAsignaturasPaginadas(page: number, limit: number): Observable<any> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+    return this.http.get<any>(`${this.apiUrl}asignaturas/paginacion`, { params });
+  }
+
   getAsignaturas(): Observable<Asignatura[]> {
     return this.http.get<Asignatura[]>(`${this.apiUrl}asignaturas`);
   }
 
-  // Crear una nueva asignatura
+  getAsignatura(id: string): Observable<Asignatura> {
+    return this.http.get<Asignatura>(`${this.apiUrl}asignaturas/${id}`);
+  }
+
   createAsignatura(asignatura: Asignatura): Observable<Asignatura> {
     return this.http.post<Asignatura>(`${this.apiUrl}asignaturas`, asignatura);
   }
 
-  // Eliminar una asignatura
   deleteAsignatura(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}asignaturas/${id}`);
   }
 
-  // Obtener asignaturas de un usuario
+  // Métodos para gestionar asignaturas de un usuario
   getUsuarioAsignaturas(usuarioId: string): Observable<Asignatura[]> {
     return this.http.get<Asignatura[]>(`${this.apiUrl}usuarios/${usuarioId}/asignaturas`);
   }
 
-  // Asignar asignatura a un usuario
+  getUsuarioAsignaturasPaginadas(usuarioId: string, page: number, limit: number): Observable<any> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+    return this.http.get<any>(`${this.apiUrl}usuarios/${usuarioId}/asignaturas/paginacion`, { params });
+  }
+
   asignarAsignatura(usuarioId: string, asignaturaId: string): Observable<any> {
     return this.http.put(`${this.apiUrl}usuarios/${usuarioId}/asignaturas/${asignaturaId}`, {});
   }
 
-  // Desasignar asignatura de un usuario
   desasignarAsignatura(usuarioId: string, asignaturaId: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}usuarios/${usuarioId}/asignaturas/${asignaturaId}`);
   }
+
+  // Métodos para gestionar tiempos de uso
+  createSessionTime(sessionTime: TiempoUso): Observable<TiempoUso> {
+		return this.http.post<TiempoUso>(this.apiUrl, sessionTime);
+	}
+
+	getSessionTimes(userId: string): Observable<TiempoUso[]> {
+		return this.http.get<TiempoUso[]>(`${this.apiUrl}/${userId}`);
+	}
+
+	updateSessionTime(id: string, sessionTime: TiempoUso): Observable<TiempoUso> {
+		return this.http.put<TiempoUso>(`${this.apiUrl}/${id}`, sessionTime);
+	}
+
+	deleteSessionTime(id: string): Observable<void> {
+		return this.http.delete<void>(`${this.apiUrl}/${id}`);
+	}
 }
